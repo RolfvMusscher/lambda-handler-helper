@@ -1,7 +1,7 @@
-import { SQSEvent } from "aws-lambda";
+import { SQSEvent } from 'aws-lambda';
 
 export interface SQSEventKind {
-  kind: "SQS";
+  kind: 'SQS';
   event: SQSEvent;
 }
 

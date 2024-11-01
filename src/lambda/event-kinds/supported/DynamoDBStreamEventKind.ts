@@ -1,6 +1,6 @@
-import { DynamoDBStreamEvent } from "aws-lambda";
+import { DynamoDBStreamEvent } from 'aws-lambda';
 
 export interface DynamoDBStreamEventKind {
-  kind: "DynamoDB";
+  kind: 'DynamoDB';
   event: DynamoDBStreamEvent;
 }

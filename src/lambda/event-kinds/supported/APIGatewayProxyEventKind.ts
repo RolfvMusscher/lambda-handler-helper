@@ -1,6 +1,6 @@
-import { APIGatewayProxyEvent } from "aws-lambda";
+import { APIGatewayProxyEvent } from 'aws-lambda';
 
 export interface APIGatewayProxyEventKind {
-  kind: "APIGateway";
+  kind: 'APIGateway';
   event: APIGatewayProxyEvent;
 }

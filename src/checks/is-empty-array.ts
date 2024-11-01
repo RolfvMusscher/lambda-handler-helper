@@ -1,3 +1,3 @@
 export const isEmptyArray = (item: unknown): item is [] => {
-  return Array.isArray(item) && item.length === 0;
+	return Array.isArray(item) && item.length === 0;
 };

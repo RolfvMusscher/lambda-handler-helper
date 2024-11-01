@@ -1,6 +1,6 @@
-import { KinesisStreamEvent } from "aws-lambda";
+import { KinesisStreamEvent } from 'aws-lambda';
 
 export interface KinesisStreamEventKind {
-  kind: "Kinesis";
+  kind: 'Kinesis';
   event: KinesisStreamEvent;
 }

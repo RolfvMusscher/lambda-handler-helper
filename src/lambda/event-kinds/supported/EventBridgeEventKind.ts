@@ -1,6 +1,6 @@
-import { EventBridgeEvent } from "aws-lambda";
+import { EventBridgeEvent } from 'aws-lambda';
 
 export interface EventBridgeEventKind {
-  kind: "EventBridge";
+  kind: 'EventBridge';
   event: EventBridgeEvent<string, unknown>;
 }

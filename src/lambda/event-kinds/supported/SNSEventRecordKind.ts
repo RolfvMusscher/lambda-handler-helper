@@ -1,6 +1,6 @@
-import { SNSEventRecord } from "aws-lambda";
+import { SNSEventRecord } from 'aws-lambda';
 
 export interface SNSEventRecordKind {
-  kind: "SNSRecord";
+  kind: 'SNSRecord';
   event: SNSEventRecord;
 }

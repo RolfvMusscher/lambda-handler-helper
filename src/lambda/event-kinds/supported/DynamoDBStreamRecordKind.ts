@@ -1,6 +1,6 @@
-import { DynamoDBRecord } from "aws-lambda";
+import { DynamoDBRecord } from 'aws-lambda';
 
 export interface DynamoDBStreamRecordKind {
-  kind: "DynamoDBRecord";
+  kind: 'DynamoDBRecord';
   event: DynamoDBRecord;
 }

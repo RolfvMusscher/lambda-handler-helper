@@ -18,5 +18,5 @@ export const isDefined = <T>(item: T | undefined | null): item is T => !isNullOr
  * @return {T} item or defaultValue
  */
 export function valueIfDefined<T>(item: T | undefined, defaultValue: T): T {
-  return isDefined(item) ? item : defaultValue;
+	return isDefined(item) ? item : defaultValue;
 }

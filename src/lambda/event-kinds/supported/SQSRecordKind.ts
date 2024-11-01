@@ -1,6 +1,6 @@
-import { SQSRecord } from "aws-lambda";
+import { SQSRecord } from 'aws-lambda';
 
 export interface SQSRecordKind {
-  kind: "SQSRecord";
+  kind: 'SQSRecord';
   event: SQSRecord;
 }

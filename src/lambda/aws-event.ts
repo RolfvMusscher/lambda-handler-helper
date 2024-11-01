@@ -1,12 +1,12 @@
 import {
-  APIGatewayProxyEvent,
-  DynamoDBStreamEvent,
-  EventBridgeEvent,
-  KinesisStreamEvent,
-  S3Event,
-  SNSEvent,
-  SQSEvent,
-} from "aws-lambda";
+	APIGatewayProxyEvent,
+	DynamoDBStreamEvent,
+	EventBridgeEvent,
+	KinesisStreamEvent,
+	S3Event,
+	SNSEvent,
+	SQSEvent,
+} from 'aws-lambda';
 
 export type AWSEvent =
   | SQSEvent

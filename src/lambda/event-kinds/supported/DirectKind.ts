@@ -1,4 +1,4 @@
 export interface DirectKind<T> {
-  kind: "Direct";
+  kind: 'Direct';
   event: T;
 }

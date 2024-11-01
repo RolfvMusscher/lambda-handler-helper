@@ -1,5 +1,5 @@
-import { Context } from "aws-lambda";
-import { AWSEventKind } from "./event-kinds/supported";
+import { Context } from 'aws-lambda';
+import { AWSEventKind } from './event-kinds/supported';
 
 export interface IEventHandler<InputMessage, OutputMessage = void> {
   handleMessage(
