@@ -1,0 +1,12 @@
+# Ignore artifacts:
+dist
+node_modules
+.github
+workflows
+.husky
+cdk.out
+coverage
+cdk.json
+jest.config.js
+tsconfig.json
+tsconfig.eslint.json

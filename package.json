@@ -1,0 +1,68 @@
+{
+  "name": "lambda-handler-helper",
+  "version": "1.0.0",
+  "description": "Default lambda implementation, that handles the different envelopes extraction",
+  "keywords": [
+    "typescript",
+    "template"
+  ],
+  "author": {
+    "name": "Rolf van Musscher",
+    "email": "rolfvanmusscher@gmail.com"
+  },
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RolfvMusscher/lambda-handler-helper.git"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "npm run clean && npm run lint && tsc",
+    "changelog": "conventional-changelog -p angular -u",
+    "changelog:update": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
+    "clean": "node -e \"var { rmdirSync, existsSync } = require('fs'), path = require('path'); [ './coverage', './dist'].forEach(fPath => {if (existsSync(path.join(__dirname, fPath))) rmdirSync(path.join(__dirname, fPath), { recursive: true })}); process.exit(0);\"",
+    "clean:all": "npm run clean && (rm -r ./node_modules || true)",
+    "preversion": "npm run build && npm run cover:check",
+    "postversion": "git push && git push --tags",
+    "prepare": "npm run build",
+    "test": "run-s 'test:*'",
+    "test:lint": "eslint --ext .ts --fix src/**/*.ts test/**/*.ts",
+    "test:unit": "jest --collect-coverage",
+    "upgrade": "npx npm-check -u",
+    "version": "npm run build && npm run changelog:update"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20.4.1",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "conventional-changelog-cli": "^5.0.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.44.0",
+    "jest": "^29.7.0",
+    "jest-cli": "^29.5.0",
+    "nodemon": "^3.0.1",
+    "npm-run-all": "^4.1.5",
+    "source-map-support": "^0.5.21",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.6.3",
+    "yargs": "^17.7.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "peerDependencies": {
+    "inversify": "^6.0.3"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.2.2"
+  }
+}
