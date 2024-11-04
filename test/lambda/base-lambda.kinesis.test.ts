@@ -1,6 +1,11 @@
 import 'reflect-metadata';
 
-import { Context, KinesisStreamEvent, KinesisStreamRecord, KinesisStreamRecordPayload } from 'aws-lambda';
+import {
+	Context,
+	KinesisStreamEvent,
+	KinesisStreamRecord,
+	KinesisStreamRecordPayload,
+} from 'aws-lambda';
 import { LambdaHandlerHelperContainer } from '../../src/container/lambda-handler-helper-container';
 import { LambdaHandlerHelper } from '../../src/lambda/lambda-handler-helper';
 import { TestEvent, TestEventHandler } from './lambda-handler-helper.test';
@@ -13,26 +18,25 @@ const testEvent2 = {
 	message: 'testKinesis2',
 };
 
-
 const event: KinesisStreamEvent = {
 	Records: [
-    {
-    	eventID: '1',
-    	eventName: 'TestEvent',
-    	eventSource: 'aws:kinesis',
-    	kinesis: {
-    		data: Buffer.from(JSON.stringify(testEvent1)).toString('base64')
-    	} as unknown as KinesisStreamRecordPayload
-    } as unknown as KinesisStreamRecord,
-    {
-    	eventID: '2',
-    	eventName: 'TestEvent',
-    	eventSource: 'aws:kinesis',
-    	kinesis: {
-    		data: Buffer.from(JSON.stringify(testEvent2)).toString('base64')
-    	} as unknown as KinesisStreamRecordPayload
-    } as unknown as KinesisStreamRecord
-	]
+		{
+			eventID: '1',
+			eventName: 'TestEvent',
+			eventSource: 'aws:kinesis',
+			kinesis: {
+				data: Buffer.from(JSON.stringify(testEvent1)).toString('base64'),
+			} as unknown as KinesisStreamRecordPayload,
+		} as unknown as KinesisStreamRecord,
+		{
+			eventID: '2',
+			eventName: 'TestEvent',
+			eventSource: 'aws:kinesis',
+			kinesis: {
+				data: Buffer.from(JSON.stringify(testEvent2)).toString('base64'),
+			} as unknown as KinesisStreamRecordPayload,
+		} as unknown as KinesisStreamRecord,
+	],
 };
 
 describe('BaseLambda TestEventHandler for Kinesis Records', () => {
@@ -40,7 +44,9 @@ describe('BaseLambda TestEventHandler for Kinesis Records', () => {
 	let baseLambda: LambdaHandlerHelper<TestEvent>;
 
 	beforeEach(() => {
-		container = new LambdaHandlerHelperContainer<TestEventHandler>(TestEventHandler);
+		container = new LambdaHandlerHelperContainer<TestEventHandler>(
+			TestEventHandler
+		);
 		baseLambda = new LambdaHandlerHelper(container);
 	});
 
@@ -54,23 +60,23 @@ describe('BaseLambda TestEventHandler for Kinesis Records', () => {
 		expect(TestEventHandler.mockedHandler).toHaveBeenCalledWith(
 			testEvent1,
 			[
-				{ kind: 'Kinesis', event },
-				{ kind: 'KinesisRecord', event: event.Records[0] },
-				{ kind: 'Direct', event: testEvent1 },
+				{ type: 'Kinesis', event },
+				{ type: 'KinesisRecord', event: event.Records[0] },
+				{ type: 'Direct', event: testEvent1 },
 			],
 			{},
-			'1',
+			'1'
 		);
 
 		expect(TestEventHandler.mockedHandler).toHaveBeenCalledWith(
 			testEvent2,
 			[
-				{ kind: 'Kinesis', event },
-				{ kind: 'KinesisRecord', event: event.Records[1] },
-				{ kind: 'Direct', event: testEvent2 },
+				{ type: 'Kinesis', event },
+				{ type: 'KinesisRecord', event: event.Records[1] },
+				{ type: 'Direct', event: testEvent2 },
 			],
 			{},
-			'2',
+			'2'
 		);
 
 		expect(TestEventHandler.mockedHandler).toHaveBeenCalledTimes(2);

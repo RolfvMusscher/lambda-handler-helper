@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Context } from 'aws-lambda';
 import { injectable } from 'inversify';
 import 'reflect-metadata';
@@ -7,7 +8,7 @@ import { LambdaHandlerHelper } from '../../src/lambda/lambda-handler-helper';
 import { IEventHandler } from '../../src/lambda/event-handler.interface';
 
 export interface TestEvent {
-  message: string;
+	message: string;
 }
 
 @injectable()
@@ -45,7 +46,7 @@ describe('LambdaHandlerHelper TestEventHandler', () => {
 
 		expect(TestEventHandler.mockedHandler).toHaveBeenCalledWith(
 			event,
-			[{ event, kind: 'Direct' }],
+			[{ event, type: 'Direct' }],
 			{},
 			'unknown',
 		);
@@ -55,8 +56,8 @@ describe('LambdaHandlerHelper TestEventHandler', () => {
 
 	it('should not start event handlers when nothing to process', async () => {
 		await baseLambda.handler(
-      undefined as unknown as TestEvent,
-      {} as unknown as Context,
+			undefined as unknown as TestEvent,
+			{} as unknown as Context,
 		);
 
 		expect(TestEventHandler.mockedHandler).not.toHaveBeenCalled();

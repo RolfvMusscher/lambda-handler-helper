@@ -1,6 +1,6 @@
-import { AWSEventKind } from './event-kinds/supported/AWSEventKind';
+import { AWSEventTypes } from './event-types/supported/aws-event-types';
 
 export type FailedMessages<T> = Array<{
-  kind: { event: T; context: AWSEventKind[] };
+  kind: { event: T; context: AWSEventTypes[] };
   error: Error;
 }>;

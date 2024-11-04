@@ -15,20 +15,20 @@ const testEvent2 = {
 
 const event: SNSEvent = {
 	Records: [
-    {
-    	EventSource: 'aws:sns',
-    	Sns: {
-    		Message: JSON.stringify(testEvent1),
-    		MessageId: '1',
-    	},
-    } as unknown as SNSEventRecord,
-    {
-    	EventSource: 'aws:sns',
-    	Sns: {
-    		Message: JSON.stringify(testEvent2),
-    		MessageId: '2',
-    	},
-    } as unknown as SNSEventRecord,
+		{
+			EventSource: 'aws:sns',
+			Sns: {
+				Message: JSON.stringify(testEvent1),
+				MessageId: '1',
+			},
+		} as unknown as SNSEventRecord,
+		{
+			EventSource: 'aws:sns',
+			Sns: {
+				Message: JSON.stringify(testEvent2),
+				MessageId: '2',
+			},
+		} as unknown as SNSEventRecord,
 	],
 };
 
@@ -51,9 +51,9 @@ describe('BaseLambda TestEventHandler for SNS Records', () => {
 		expect(TestEventHandler.mockedHandler).toHaveBeenCalledWith(
 			testEvent1,
 			[
-				{ kind: 'SNS', event },
-				{ kind: 'SNSRecord', event: event.Records[0] },
-				{ kind: 'Direct', event: testEvent1 },
+				{ type: 'SNS', event },
+				{ type: 'SNSRecord', event: event.Records[0] },
+				{ type: 'Direct', event: testEvent1 },
 			],
 			{},
 			'1',
@@ -62,9 +62,9 @@ describe('BaseLambda TestEventHandler for SNS Records', () => {
 		expect(TestEventHandler.mockedHandler).toHaveBeenCalledWith(
 			testEvent2,
 			[
-				{ kind: 'SNS', event },
-				{ kind: 'SNSRecord', event: event.Records[1] },
-				{ kind: 'Direct', event: testEvent2 },
+				{ type: 'SNS', event },
+				{ type: 'SNSRecord', event: event.Records[1] },
+				{ type: 'Direct', event: testEvent2 },
 			],
 			{},
 			'2',

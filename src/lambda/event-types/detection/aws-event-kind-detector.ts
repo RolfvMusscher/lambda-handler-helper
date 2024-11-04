@@ -19,19 +19,19 @@ import { AWSEventKind } from '../supported';
 export class AwsEventKindDetector<MessageDetail> {
 	public detectAWSEventKind(event: AWSEvent | MessageDetail): AWSEventKind {
 		if (this.isAPIGatewayProxyEvent(event))
-			return { kind: 'APIGateway', event };
+			return { type: 'APIGateway', event };
 
 		if (this.containsRecords(event)) {
-			if (this.isSQSEvent(event)) return { kind: 'SQS', event };
-			if (this.isSNSEvent(event)) return { kind: 'SNS', event };
-			if (this.isKinesisEvent(event)) return { kind: 'Kinesis', event };
-			if (this.isDynamoDBStreamEvent(event)) return { kind: 'DynamoDB', event };
-			if (this.isS3Event(event)) return { kind: 'S3', event };
+			if (this.isSQSEvent(event)) return { type: 'SQS', event };
+			if (this.isSNSEvent(event)) return { type: 'SNS', event };
+			if (this.isKinesisEvent(event)) return { type: 'Kinesis', event };
+			if (this.isDynamoDBStreamEvent(event)) return { type: 'DynamoDB', event };
+			if (this.isS3Event(event)) return { type: 'S3', event };
 		}
 
-		if (this.isEventBridgeEvent(event)) return { kind: 'EventBridge', event };
+		if (this.isEventBridgeEvent(event)) return { type: 'EventBridge', event };
 
-		return { kind: 'Direct', event };
+		return { type: 'Direct', event };
 	}
 
 	// Type guard for SQSEvent

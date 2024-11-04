@@ -1,4 +1,5 @@
 export enum LogLevel {
+    TRACE = 'TRACE',
     DEBUG = 'DEBUG',
     INFO = 'INFO',
     WARN = 'WARN',
@@ -6,7 +7,8 @@ export enum LogLevel {
     FATAL = 'FATAL',
 }
 
+const logLevelOrder = [LogLevel.TRACE, LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR, LogLevel.FATAL];
+
 export function isLogLevelGreaterThanOrEqual(level: LogLevel, comparisonLevel: LogLevel): boolean {
-	const logLevelOrder = [LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR, LogLevel.FATAL];
 	return logLevelOrder.indexOf(level) >= logLevelOrder.indexOf(comparisonLevel);
 }

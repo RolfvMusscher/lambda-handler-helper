@@ -15,16 +15,16 @@ const testEvent2 = {
 
 const event: SQSEvent = {
 	Records: [
-    {
-    	messageId: '1',
-    	eventSource: 'aws:sqs',
-    	body: JSON.stringify(testEvent1),
-    } as unknown as SQSRecord,
-    {
-    	messageId: '2',
-    	eventSource: 'aws:sqs',
-    	body: JSON.stringify(testEvent2),
-    } as unknown as SQSRecord,
+		{
+			messageId: '1',
+			eventSource: 'aws:sqs',
+			body: JSON.stringify(testEvent1),
+		} as unknown as SQSRecord,
+		{
+			messageId: '2',
+			eventSource: 'aws:sqs',
+			body: JSON.stringify(testEvent2),
+		} as unknown as SQSRecord,
 	],
 };
 
@@ -49,9 +49,9 @@ describe('BaseLambda TestEventHandler for SQS Records', () => {
 		expect(TestEventHandler.mockedHandler).toHaveBeenCalledWith(
 			testEvent1,
 			[
-				{ kind: 'SQS', event },
-				{ kind: 'SQSRecord', event: event.Records[0] },
-				{ kind: 'Direct', event: testEvent1 },
+				{ type: 'SQS', event },
+				{ type: 'SQSRecord', event: event.Records[0] },
+				{ type: 'Direct', event: testEvent1 },
 			],
 			{},
 			'1'
@@ -60,9 +60,9 @@ describe('BaseLambda TestEventHandler for SQS Records', () => {
 		expect(TestEventHandler.mockedHandler).toHaveBeenCalledWith(
 			testEvent2,
 			[
-				{ kind: 'SQS', event },
-				{ kind: 'SQSRecord', event: event.Records[1] },
-				{ kind: 'Direct', event: testEvent2 },
+				{ type: 'SQS', event },
+				{ type: 'SQSRecord', event: event.Records[1] },
+				{ type: 'Direct', event: testEvent2 },
 			],
 			{},
 			'2'

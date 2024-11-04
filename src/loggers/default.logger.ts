@@ -6,7 +6,12 @@ import { ILogger } from './logger.interface';
 
 @injectable()
 export class DefaultLogger implements ILogger, IDisposable {
-	private readonly storedLines = new Array<{ eventId: string; message: any }>();
+	private readonly storedLines = new Array<{
+    eventId: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    message: any;
+    logLevel: LogLevel;
+  }>();
 
 	constructor(
     @inject(CONTAINERTYPES.LogLevel)
@@ -14,11 +19,12 @@ export class DefaultLogger implements ILogger, IDisposable {
     public readonly logLevel: LogLevel = LogLevel.WARN,
     @inject(CONTAINERTYPES.EventId)
     @optional()
-    public readonly eventId: string = 'unspecifed',
+    public readonly eventId: string = 'unspecifed'
 	) {}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	log(level: LogLevel, message: any): void {
-		const newMessage = { eventId: this.eventId, message };
+		const newMessage = { eventId: this.eventId, message, logLevel: level };
 		if (isLogLevelGreaterThanOrEqual(level, this.logLevel)) {
 			console.log(JSON.stringify(newMessage));
 			// log the rest as well
