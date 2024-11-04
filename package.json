@@ -26,14 +26,14 @@
     "changelog:update": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
     "clean": "node -e \"var { rmdirSync, existsSync } = require('fs'), path = require('path'); [ './coverage', './dist'].forEach(fPath => {if (existsSync(path.join(__dirname, fPath))) rmdirSync(path.join(__dirname, fPath), { recursive: true })}); process.exit(0);\"",
     "clean:all": "npm run clean && (rm -r ./node_modules || true)",
-    "cover": "nyc npm run test:unit",
+    "cover": "nyc --check-coverage npm run test:unit",
     "cover:check": "nyc --check-coverage --reporter=lcov npm run test:unit",
     "preversion": "npm run build && npm run cover:check",
     "postversion": "git push && git push --tags",
     "prepare": "npm run build",
     "test": "run-s 'test:*'",
     "test:lint": "eslint --ext .ts --fix src/**/*.ts test/**/*.ts",
-    "test:unit": "jest --collect-coverage",
+    "test:unit": "jest",
     "upgrade": "npx npm-check -u",
     "version": "npm run build && npm run changelog:update"
   },
@@ -67,5 +67,9 @@
   },
   "dependencies": {
     "reflect-metadata": "^0.2.2"
+  },
+  "nyc": {
+    "reporter": ["lcov", "text"],
+    "tempDirectory": "./coverage"
   }
 }

@@ -12,7 +12,7 @@ module.exports = {
 		'!<rootDir>/dist/**/*',
 		'!<rootDir>/bin/**/*.ts',
 	],
-	coverageReporters: ['json-summary', 'text', 'lcov'],
+	coverageReporters: ['json'],
 	testMatch: ['<rootDir>/test/**/*.test.ts'],
 	coverageDirectory: argv.coverageDirectory || './coverage',
 	moduleFileExtensions: ['ts', 'js'],
