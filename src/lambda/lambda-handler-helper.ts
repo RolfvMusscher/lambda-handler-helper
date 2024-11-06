@@ -36,7 +36,7 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 	constructor(
     readonly container: LambdaHandlerHelperContainer<
       IEventHandler<InputMessage, OutputMessage>
-    >,
+    >
 	) {
 		this.logger = this.container.get<ILogger>(CONTAINERTYPES.ILogger);
 	}
@@ -44,7 +44,7 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 	// Method to handle generic events
 	public async handler(
 		event: AWSEvent | InputMessage,
-		context: Context,
+		context: Context
 	): Promise<void | OutputMessage | SQSBatchResponse> {
 		try {
 			const failedMessages: FailedMessages<InputMessage> = [];
@@ -65,14 +65,12 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 						scopedContainer
 							.bind<string>(CONTAINERTYPES.EventId)
 							.toConstantValue(eventSet.eventId);
-						const eventHandler = this.container.get<
-              IEventHandler<InputMessage, OutputMessage>
-            >(CONTAINERTYPES.IEventHandler);
+						const eventHandler = scopedContainer.get<IEventHandler<InputMessage, OutputMessage>>(CONTAINERTYPES.IEventHandler);
 						return await eventHandler.handleMessage(
 							eventSet.event,
 							eventSet.context,
 							context,
-							eventSet.eventId,
+							eventSet.eventId
 						);
 					} catch (error) {
 						this.logger.log(LogLevel.ERROR, {
@@ -87,13 +85,13 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 						}
 					}
 					return undefined;
-				}),
+				})
 			);
 
 			if (failedMessages.length > 0) {
 				this.logger.log(
 					LogLevel.ERROR,
-					`batch has failed items ${JSON.stringify(failedMessages)})`,
+					`batch has failed items ${JSON.stringify(failedMessages)})`
 				);
 			}
 
@@ -126,7 +124,7 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 		} catch (err) {
 			this.logger.log(
 				LogLevel.FATAL,
-				JSON.stringify({ Error: inspect(err, { depth: null }) }),
+				JSON.stringify({ Error: inspect(err, { depth: null }) })
 			);
 			throw err;
 		}
@@ -136,7 +134,7 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 		failedMessages: Array<{
       kind: { event: InputMessage; context: AWSEventTypes[] };
       error: Error;
-    }>,
+    }>
 	): SQSBatchItemFailure[] {
 		return failedMessages.map((failed): SQSBatchItemFailure => {
 			const record: SQSRecordKind = failed.kind.context[1] as SQSRecordKind;
@@ -148,13 +146,13 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 		failedMessages: Array<{
       kind: { event: InputMessage; context: AWSEventTypes[] };
       error: Error;
-    }>,
+    }>
 	): KinesisStreamBatchItemFailure[] {
 		return failedMessages.map((failed): DynamoDBBatchItemFailure => {
 			const record: DynamoDBRecord = failed.kind.event as DynamoDBRecord;
 			assert(
 				isDefined(record.eventID),
-				'EventId not defined in batchItemfailure for dynamo',
+				'EventId not defined in batchItemfailure for dynamo'
 			);
 			return { itemIdentifier: record.eventID };
 		});
@@ -164,7 +162,7 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 		failedMessages: Array<{
       kind: { event: InputMessage; context: AWSEventTypes[] };
       error: Error;
-    }>,
+    }>
 	): KinesisStreamBatchItemFailure[] {
 		return failedMessages.map((failed): KinesisStreamBatchItemFailure => {
 			const record: KinesisStreamRecordEventType = failed.kind
@@ -176,7 +174,7 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 	private extractEnvelopes(
 		event: AWSEvent | InputMessage,
 		context: AWSEventTypes[] = [],
-		eventId = 'unknown',
+		eventId = 'unknown'
 	): Array<{ event: InputMessage; context: AWSEventTypes[]; eventId: string }> {
 		const eventKind = this.kindDetector.detectAWSEventKind(event);
 
@@ -193,19 +191,19 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 				return this.extractEnvelopes(
 					newEvent,
 					[...context, { type: 'SQSRecord', event: record }],
-					record.messageId,
+					record.messageId
 				);
 			});
 			break;
 		case 'SNS':
 			result = eventKind.event.Records.flatMap((record) => {
 				const newEvent: AWSEvent | InputMessage = JSON.parse(
-					record.Sns.Message,
+					record.Sns.Message
 				);
 				return this.extractEnvelopes(
 					newEvent,
 					[...context, { type: 'SNSRecord', event: record }],
-					record.Sns.MessageId,
+					record.Sns.MessageId
 				);
 			});
 			break;
@@ -236,7 +234,7 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 				return this.extractEnvelopes(
 					newEvent,
 					[...context, { type: 'S3Record', event: record }],
-					eventId,
+					eventId
 				);
 			});
 			break;
@@ -249,12 +247,12 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 		case 'Kinesis':
 			result = eventKind.event.Records.flatMap((record) => {
 				const newEvent: AWSEvent | InputMessage = JSON.parse(
-					Buffer.from(record.kinesis.data, 'base64').toString('utf8'),
+					Buffer.from(record.kinesis.data, 'base64').toString('utf8')
 				);
 				return this.extractEnvelopes(
 					newEvent,
 					[...context, { type: 'KinesisRecord', event: record }],
-					record.eventID,
+					record.eventID
 				);
 			});
 			break;
