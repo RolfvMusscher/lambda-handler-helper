@@ -9,21 +9,30 @@ const traceMessage = 'trace message';
 
 describe('DefaultLogger', () => {
 	let logger: DefaultLogger;
-	let consoleSpy: jest.SpyInstance;
+	let consoleInfoSpy: jest.SpyInstance;
+	let consoleDebugSpy: jest.SpyInstance;
+	let consoleWarnSpy: jest.SpyInstance;
+	let consoleErrorSpy: jest.SpyInstance;
 
 	beforeEach(() => {
 		logger = new DefaultLogger(LogLevel.INFO, 'testEventId');
-		consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+		consoleInfoSpy = jest.spyOn(console, 'info').mockImplementation(() => {});
+		consoleDebugSpy = jest.spyOn(console, 'debug').mockImplementation(() => {});
+		consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+		consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 	});
 
 	afterEach(() => {
-		consoleSpy.mockRestore();
+		consoleInfoSpy.mockRestore();
+		consoleDebugSpy.mockRestore();
+		consoleWarnSpy.mockRestore();
+		consoleErrorSpy.mockRestore();
 	});
 
 	it('should log message when log level is greater than or equal to the logger log level', () => {
 		logger.log(LogLevel.INFO, infoMessage);
 
-		expect(consoleSpy).toHaveBeenCalledWith(
+		expect(consoleInfoSpy).toHaveBeenCalledWith(
 			JSON.stringify({ eventId: 'testEventId', message: infoMessage, logLevel: 'INFO' })
 		);
 	});
@@ -32,8 +41,8 @@ describe('DefaultLogger', () => {
 		logger.log(LogLevel.INFO, infoMessage);
 		logger.log(LogLevel.DEBUG, debugMessage);
 
-		expect(consoleSpy).toHaveBeenCalledTimes(1);
-		expect(consoleSpy).toHaveBeenCalledWith(
+		expect(consoleInfoSpy).toHaveBeenCalledTimes(1);
+		expect(consoleInfoSpy).toHaveBeenCalledWith(
 			JSON.stringify({ eventId: 'testEventId', message: infoMessage, logLevel: 'INFO' })
 		);
 	});
@@ -42,7 +51,7 @@ describe('DefaultLogger', () => {
 		
 		logger.log(LogLevel.TRACE, traceMessage);
 
-		expect(consoleSpy).not.toHaveBeenCalled();
+		expect(consoleInfoSpy).not.toHaveBeenCalled();
 	});
 
 	it('should log stored messages when a new message with sufficient log level is logged', () => {
@@ -50,11 +59,13 @@ describe('DefaultLogger', () => {
 		logger.log(LogLevel.DEBUG, debugMessage);
 		logger.log(LogLevel.WARN, warnMessage);
 
-		expect(consoleSpy).toHaveBeenCalledTimes(2);
-		expect(consoleSpy).toHaveBeenCalledWith(
+		expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
 			JSON.stringify({ eventId: 'testEventId', message: warnMessage, logLevel: 'WARN' })
 		);
-		expect(consoleSpy).toHaveBeenCalledWith(
+
+		expect(consoleInfoSpy).toHaveBeenCalledTimes(1);
+		expect(consoleInfoSpy).toHaveBeenCalledWith(
 			JSON.stringify({ eventId: 'testEventId', message: infoMessage, logLevel: 'INFO' })
 		);
 	});
@@ -66,13 +77,15 @@ describe('DefaultLogger', () => {
 		logger.log(LogLevel.WARN, warnMessage);
 		logger.log(LogLevel.WARN, warnMessage2);
 
-		expect(consoleSpy).toHaveBeenCalledTimes(3);
-		expect(consoleSpy).toHaveBeenCalledWith(
+		expect(consoleWarnSpy).toHaveBeenCalledTimes(2);
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
 			JSON.stringify({
 				eventId: 'testEventId',
 				message: warnMessage2,
 				logLevel: 'WARN',
 			})
 		);
+
+		expect(consoleInfoSpy).toHaveBeenCalledTimes(1);
 	});
 });

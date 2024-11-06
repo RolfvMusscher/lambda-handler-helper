@@ -18,7 +18,7 @@ export class DefaultLogger implements ILogger, IDisposable {
     @inject(CONTAINERTYPES.LogLevel)
     @optional()
     public readonly logLevel: LogLevel = isNullOrUndefined(process.env.LOG_LEVEL) ?  LogLevel.WARN : (process.env.LOG_LEVEL as LogLevel),
-	
+
     @inject(CONTAINERTYPES.EventId)
     @optional()
     public readonly eventId: string = 'unspecifed'
@@ -28,15 +28,39 @@ export class DefaultLogger implements ILogger, IDisposable {
 	log(level: LogLevel, message: any): void {
 		const newMessage = { eventId: this.eventId, message, logLevel: level };
 		if (isLogLevelGreaterThanOrEqual(level, this.logLevel)) {
-			console.log(JSON.stringify(newMessage));
+			this.logMessage(newMessage);
 			// log the rest as well
 			this.storedLines.forEach((line) => {
-				console.log(JSON.stringify(line));
+				this.logMessage(line);
 			});
 			this.clearMessage();
 		} else if (isLogLevelGreaterThanOrEqual(level, LogLevel.INFO)) {
 			// we dont want to default store trace logs
 			this.storedLines.push(newMessage);
+		}
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private logMessage(message: { eventId: string, message: any, logLevel: LogLevel }): void {
+		const logLine = JSON.stringify(message);
+		switch(message.logLevel) 
+		{
+		case LogLevel.INFO:
+			console.info(logLine);
+			break;
+		case LogLevel.DEBUG:
+			console.debug(logLine);
+			break;
+		case LogLevel.WARN:
+			console.warn(logLine);
+			break;
+		case LogLevel.TRACE:
+			console.trace(logLine);
+			break;
+		case LogLevel.ERROR:
+		case LogLevel.FATAL:
+			console.error(logLine);
+			break;
 		}
 	}
 
