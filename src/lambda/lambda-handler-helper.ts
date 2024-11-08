@@ -25,6 +25,7 @@ import { KinesisStreamRecordEventType } from './event-types/supported/kinesis-st
 import { SQSRecordKind } from './event-types/supported/sqs-record-event-type';
 import { FailedMessages } from './failed-messages';
 import { isDisposable } from '../disposable.interface';
+import { validateAndConvertDTO } from '../validation/validation';
 
 // Define the base class with a generic type for the message
 export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
@@ -66,8 +67,14 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 							.bind<string>(CONTAINERTYPES.EventId)
 							.toConstantValue(eventSet.eventId);
 						const eventHandler = scopedContainer.get<IEventHandler<InputMessage, OutputMessage>>(CONTAINERTYPES.IEventHandler);
+						let dto = eventSet.event;
+						if (eventHandler.inputValidationClass) {
+							this.logger.log(LogLevel.INFO, 'Validating and converting DTO');
+							dto = await validateAndConvertDTO(eventSet.event as object, eventHandler.inputValidationClass) as InputMessage;
+						}
+
 						return await eventHandler.handleMessage(
-							eventSet.event,
+							dto,
 							eventSet.context,
 							context,
 							eventSet.eventId

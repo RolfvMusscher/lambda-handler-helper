@@ -6,13 +6,18 @@ import 'reflect-metadata';
 import { LambdaHandlerHelperContainer } from '../../src/container/lambda-handler-helper-container';
 import { LambdaHandlerHelper } from '../../src/lambda/lambda-handler-helper';
 import { IEventHandler } from '../../src/lambda/event-handler.interface';
+import { ClassConstructor } from 'class-transformer';
+import { IsDefined, IsString } from 'class-validator';
 
-export interface TestEvent {
-	message: string;
+export class TestEvent {
+	@IsDefined()
+	@IsString()
+		message?: string;
 }
 
 @injectable()
 export class TestEventHandler implements IEventHandler<TestEvent, void> {
+	inputValidationClass?: ClassConstructor<TestEvent> = TestEvent;
 	static mockedHandler = jest.fn();
 	async handleMessage(
 		message: TestEvent,
@@ -52,6 +57,15 @@ describe('LambdaHandlerHelper TestEventHandler', () => {
 		);
 
 		expect(TestEventHandler.mockedHandler).toHaveBeenCalledTimes(1);
+	});
+
+	it('should fail when sending an invalid event', async () => {
+		const event: TestEvent = {
+			message: 123,
+		} as unknown as TestEvent;
+
+		expect(baseLambda.handler(event, {} as unknown as Context)).rejects.toThrowError('Error processing message')
+
 	});
 
 	it('should not start event handlers when nothing to process', async () => {
