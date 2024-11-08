@@ -16,8 +16,16 @@ module.exports = {
 	testMatch: ['<rootDir>/test/**/*.test.ts'],
 	coverageDirectory: argv.coverageDirectory || './coverage',
 	moduleFileExtensions: ['ts', 'js'],
+	
 	testEnvironment: 'node',
 	transform: {
 		'\\.ts$': 'ts-jest',
 	},
+	globals: {
+		'ts-jest': {
+			tsconfig: {
+				'experimentalDecorators': true
+			}
+		}
+	}
 };
