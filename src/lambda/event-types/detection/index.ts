@@ -1,0 +1,1 @@
+export { AwsEventKindDetector } from './aws-event-kind-detector'

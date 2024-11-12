@@ -31,7 +31,7 @@
     "preversion": "npm run build && npm run cover:check",
     "postversion": "git push && git push --tags",
     "prepare": "npm run build",
-    "test": "run-s 'test:*'",
+    "test": "run-s test:*",
     "test:lint": "eslint --ext .ts --fix src/**/*.ts test/**/*.ts",
     "test:unit": "jest",
     "upgrade": "npx npm-check -u",
@@ -66,10 +66,15 @@
     "inversify": "^6.0.3"
   },
   "dependencies": {
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "reflect-metadata": "^0.2.2"
   },
   "nyc": {
-    "reporter": ["lcov", "text"],
+    "reporter": [
+      "lcov",
+      "text"
+    ],
     "tempDirectory": "./coverage"
   }
 }
