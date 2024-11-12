@@ -7,7 +7,7 @@ This repository contains utilities and helpers for AWS Lambda functions, with a 
 - [Installation](#installation)
 - [Usage](#usage)
   - [Cold Start](#cold-start)
-  - [Warm Start](#warm-start)
+  - [Warm Start](#warm-lambda)
 
 ### Installation
 
