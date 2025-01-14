@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
 import assert from 'assert';
 import {
+	APIGatewayProxyResult,
 	Context,
 	DynamoDBBatchItemFailure,
 	DynamoDBBatchResponse,
@@ -26,6 +27,7 @@ import { SQSRecordKind } from './event-types/supported/sqs-record-event-type';
 import { FailedMessages } from './failed-messages';
 import { isDisposable } from '../disposable.interface';
 import { validateAndConvertDTO } from '../validation/validation';
+import { ValidationException } from '../validation/validation-exception';
 
 // Define the base class with a generic type for the message
 export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
@@ -46,7 +48,7 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 	public async handler(
 		event: AWSEvent | InputMessage,
 		context: Context
-	): Promise<void | OutputMessage | SQSBatchResponse> {
+	): Promise<void | OutputMessage | SQSBatchResponse | APIGatewayProxyResult> {
 		try {
 			const failedMessages: FailedMessages<InputMessage> = [];
 			if (isNullOrUndefined(event)) {
@@ -121,6 +123,24 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 						batchItemFailures:
                 this.convertFailedMessagesToDynamoBatch(failedMessages),
 					} satisfies DynamoDBBatchResponse;
+				
+			
+			}
+
+			switch (topLevel.type) {
+				case 'APIGateway':
+					const validationError = failedMessages.find((failed) => ValidationException.isValidationException(failed.error));
+					if (isDefined(validationError)) {
+						return {
+							statusCode: 400,
+							body: JSON.stringify({ message: validationError.error.message }),
+						}
+					} else {
+						return {
+							statusCode: 500,
+							body: JSON.stringify({ message: 'Internal Server Error' }),
+						}
+					}
 				}
 			}
 
@@ -230,9 +250,9 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 			break;
 		case 'APIGateway':
 			result.push({
-				event: JSON.parse(eventKind.event.body ?? '{}'),
+				event: this.parseEventBody(eventKind.event.body),
 				context,
-				eventId,
+				eventId : eventKind.event.requestContext.requestId,
 			});
 			break;
 		case 'S3':
@@ -267,4 +287,17 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 
 		return result;
 	}
+
+	private parseEventBody(body: string | null): any {
+		if (isNullOrUndefined(body)) {
+		  return {};
+		}
+		try {
+		  return JSON.parse(body);
+		} catch (error) {
+			this.logger.log(LogLevel.ERROR, 
+				JSON.stringify({ Error: inspect(error, { depth: null }) }));
+		  return {};
+		}
+	  }
 }
