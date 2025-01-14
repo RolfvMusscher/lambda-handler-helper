@@ -14,5 +14,10 @@ export class ValidationException extends Error {
 				validationErrors.map((v: ValidationError) => v.property)
 			)}`
 		);
+		this.name = 'ValidationException';
+	}
+
+	static isValidationException(error: any): error is ValidationException {
+		return error instanceof ValidationException || (error && error.name === 'ValidationException');
 	}
 }
