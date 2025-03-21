@@ -28,6 +28,7 @@ import { FailedMessages } from './failed-messages';
 import { isDisposable } from '../disposable.interface';
 import { validateAndConvertDTO } from '../validation/validation';
 import { ValidationException } from '../validation/validation-exception';
+import { Container } from 'inversify';
 
 // Define the base class with a generic type for the message
 export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
@@ -64,7 +65,7 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 			const result = await Promise.all(
 				events.map(async (eventSet): Promise<OutputMessage | undefined> => {
 					try {
-						const scopedContainer = this.container.createChild();
+						const scopedContainer = new Container({ parent: this.container});
 						scopedContainer
 							.bind<string>(CONTAINERTYPES.EventId)
 							.toConstantValue(eventSet.eventId);
