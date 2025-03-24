@@ -32,7 +32,7 @@
     "postversion": "git push && git push --tags",
     "prepare": "npm run build",
     "test": "run-s test:*",
-    "test:lint": "eslint --ext .ts --fix src/**/*.ts test/**/*.ts",
+    "test:lint": "npx eslint --ext .ts --fix src/**/*.ts test/**/*.ts",
     "test:unit": "jest",
     "upgrade": "npx npm-check -u",
     "version": "npm run build && npm run changelog:update"
@@ -55,7 +55,8 @@
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.1",
     "typescript": "^5.6.3",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "inversify": "^7.2.0"
   },
   "config": {
     "commitizen": {
@@ -63,7 +64,7 @@
     }
   },
   "peerDependencies": {
-    "inversify": "^6.0.3"
+    "inversify": "^7.2.0"
   },
   "dependencies": {
     "class-transformer": "^0.5.1",
