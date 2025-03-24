@@ -28,6 +28,7 @@ import { FailedMessages } from './failed-messages';
 import { isDisposable } from '../disposable.interface';
 import { validateAndConvertDTO } from '../validation/validation';
 import { ValidationException } from '../validation/validation-exception';
+import { Container } from 'inversify';
 
 // Define the base class with a generic type for the message
 export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
@@ -63,8 +64,11 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 
 			const result = await Promise.all(
 				events.map(async (eventSet): Promise<OutputMessage | undefined> => {
+					let logger : ILogger = this.logger;
+					let scopedContainer : Container | undefined = undefined;
 					try {
-						const scopedContainer = this.container.createChild();
+						scopedContainer = new Container({ parent: this.container});
+						logger = scopedContainer.get<ILogger>(CONTAINERTYPES.ILogger);
 						scopedContainer
 							.bind<string>(CONTAINERTYPES.EventId)
 							.toConstantValue(eventSet.eventId);
@@ -82,15 +86,18 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 							eventSet.eventId
 						);
 					} catch (error) {
-						this.logger.log(LogLevel.ERROR, {
+						logger.log(LogLevel.ERROR, {
 							Error: inspect(error, { depth: null }),
 							event: eventSet.event,
 						});
-						failedMessages.push({ kind: eventSet, error: error as Error });
+						failedMessages.push({ kind: eventSet, error: error as Error });						
 					} finally {
-						const logger = this.container.get<ILogger>(CONTAINERTYPES.ILogger);
-						if (isDisposable(logger)) {
-							logger.dispose();
+						if (scopedContainer !== undefined) {
+							// should move this disposing
+							const logger = this.container.get<ILogger>(CONTAINERTYPES.ILogger);
+							if (isDisposable(logger)) {
+								logger.dispose();
+							}
 						}
 					}
 					return undefined;

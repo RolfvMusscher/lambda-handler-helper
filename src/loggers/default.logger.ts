@@ -28,11 +28,11 @@ export class DefaultLogger implements ILogger, IDisposable {
 	log(level: LogLevel, message: any): void {
 		const newMessage = { eventId: this.eventId, message, logLevel: level };
 		if (isLogLevelGreaterThanOrEqual(level, this.logLevel)) {
-			this.logMessage(newMessage);
-			// log the rest as well
+			// log the older messages first
 			this.storedLines.forEach((line) => {
 				this.logMessage(line);
 			});
+			this.logMessage(newMessage);
 			this.clearMessage();
 		} else if (isLogLevelGreaterThanOrEqual(level, LogLevel.INFO)) {
 			// we dont want to default store trace logs
