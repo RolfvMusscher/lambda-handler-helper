@@ -68,14 +68,15 @@ export class LambdaHandlerHelper<InputMessage, OutputMessage = void> {
 					let scopedContainer : Container | undefined = undefined;
 					try {
 						scopedContainer = new Container({ parent: this.container});
-						logger = scopedContainer.get<ILogger>(CONTAINERTYPES.ILogger);
 						scopedContainer
 							.bind<string>(CONTAINERTYPES.EventId)
 							.toConstantValue(eventSet.eventId);
+						
+						logger = scopedContainer.get<ILogger>(CONTAINERTYPES.ILogger);
 						const eventHandler = scopedContainer.get<IEventHandler<InputMessage, OutputMessage>>(CONTAINERTYPES.IEventHandler);
 						let dto = eventSet.event;
 						if (eventHandler.inputValidationClass) {
-							this.logger.log(LogLevel.INFO, 'Validating and converting DTO');
+							logger.log(LogLevel.INFO, 'Validating and converting DTO');
 							dto = await validateAndConvertDTO(eventSet.event as object, eventHandler.inputValidationClass) as InputMessage;
 						}
 
