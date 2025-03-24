@@ -1,6 +1,6 @@
 {
   "name": "lambda-handler-helper",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Default lambda implementation, that handles the different envelopes extraction",
   "keywords": [
     "typescript",
