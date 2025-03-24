@@ -55,7 +55,8 @@
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.1",
     "typescript": "^5.6.3",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "inversify": "^7.2.0"
   },
   "config": {
     "commitizen": {
@@ -63,7 +64,7 @@
     }
   },
   "peerDependencies": {
-    "inversify": "^7.0.0"
+    "inversify": "^7.2.0"
   },
   "dependencies": {
     "class-transformer": "^0.5.1",
