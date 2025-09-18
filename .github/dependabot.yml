@@ -1,7 +1,39 @@
 version: 2
 updates:
-- package-ecosystem: npm
-  directory: "/"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 10
+  - package-ecosystem: npm
+    versioning-strategy: lockfile-only
+    directory: /
+    schedule:
+      interval: weekly
+      day: sunday
+    groups:
+      production-packages-bump:
+        applies-to: version-updates
+        dependency-type: production
+        update-types:
+          - minor
+          - patch
+      dev-dependencies-bump:
+        applies-to: version-updates
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+    commit-message:
+      prefix: 'chore(deps):'
+    cooldown:
+      default-days: 7
+  - package-ecosystem: npm
+    versioning-strategy: lockfile-only
+    directory: /
+    schedule:
+      interval: daily
+    groups:
+      security:
+        applies-to: security-updates
+        dependency-type: production
+      security-dev-dependencies:
+        applies-to: security-updates
+        dependency-type: development
+    commit-message:
+      prefix: 'fix(deps):'
